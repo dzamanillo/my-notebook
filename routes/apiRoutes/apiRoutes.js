@@ -2,25 +2,22 @@ const express = require("express");
 const router = require("express").Router();
 const path = require("path");
 const fs = require("fs");
-const dbReader = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
-
-console.log("Reader: ", dbReader);
-
-function createNewNote(body) {
-	const note = body;
-	dbReader.push(note);
-	fs.writeFileSync("./db/db.json", JSON.stringify(dbReader, null, 2));
-	return note;
-}
+const { v4: uuidv4 } = require("uuid");
+const { createNewNote, validateNote } = require("../../lib/notes");
 
 router.get("/api/notes", (req, res) => {
-	res.send(dbReader);
+	res.send(JSON.parse(fs.readFileSync("./db/db.json", "utf-8")));
 });
 
 router.post("/api/notes", (req, res) => {
-	const note = createNewNote(req.body);
+	req.body.id = uuidv4();
 
-	res.send(note);
+	if (!validateNote(req.body)) {
+		res.status(400).send("Your notes is not properly formatted.");
+	} else {
+		const note = createNewNote(req.body);
+		res.send(note);
+	}
 });
 
 module.exports = router;
