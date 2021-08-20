@@ -1,4 +1,4 @@
-const { createNewNote, deleteNote } = require("../lib/notes");
+const { createNewNote } = require("../lib/notes");
 const fs = require("fs");
 
 test("new note is created", () => {
@@ -13,16 +13,4 @@ test("new note is created", () => {
 	const newDataBase = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
 
 	expect(newDataBase.length).toEqual(oldDataBase.length + 1);
-});
-
-test("note deleted", () => {
-	const oldDataBase = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
-	console.log("oldDataBase: ", oldDataBase);
-
-	deleteNote("2df8a56b-c71e-4868-940f-0a1265fec858");
-
-	const newDataBase = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
-	console.log("newDataBase: ", newDataBase);
-
-	expect(newDataBase).toEqual(oldDataBase - 1);
 });
