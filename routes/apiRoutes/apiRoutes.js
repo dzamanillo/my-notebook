@@ -3,7 +3,7 @@ const router = require("express").Router();
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const { createNewNote, validateNote } = require("../../lib/notes");
+const { createNewNote, validateNote, deleteNote } = require("../../lib/notes");
 
 router.get("/api/notes", (req, res) => {
 	res.send(JSON.parse(fs.readFileSync("./db/db.json", "utf-8")));
@@ -18,6 +18,12 @@ router.post("/api/notes", (req, res) => {
 		const note = createNewNote(req.body);
 		res.send(note);
 	}
+});
+
+router.delete("/api/notes/:id", (req, res) => {
+	const toDelete = req.params.id;
+	deleteNote(toDelete);
+	res.send("deleted");
 });
 
 module.exports = router;
